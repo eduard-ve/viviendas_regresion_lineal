@@ -1,0 +1,438 @@
+/* ===== VARIABLES CSS ===== */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+    
+    --bg-light: #f8f9fa;
+    --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --border-radius: 15px;
+    --border-radius-small: 8px;
+    
+    --text-primary: #2c3e50;
+    --text-secondary: #6c757d;
+    --text-light: rgba(255, 255, 255, 0.9);
+    
+    --transition: all 0.3s ease;
+}
+
+/* ===== ESTILOS GLOBALES ===== */
+body {
+    background-color: var(--bg-light);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: var(--primary-gradient) !important;
+    box-shadow: var(--card-shadow);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.navbar .btn {
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    border-radius: var(--border-radius-small);
+    transition: var(--transition);
+}
+
+.navbar .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== TARJETAS ESTADÍSTICAS ===== */
+.stat-card {
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-card h5 {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card i {
+    opacity: 0.8;
+}
+
+/* ===== VARIANTES DE TARJETAS ===== */
+.stat-card.success {
+    background: var(--success-gradient);
+}
+
+.stat-card.warning {
+    background: var(--warning-gradient);
+    color: var(--text-primary);
+}
+
+.stat-card.danger {
+    background: var(--danger-gradient);
+}
+
+/* ===== CONTENEDORES DE GRÁFICOS ===== */
+.graph-container, .table-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.graph-container:hover, .table-container:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.graph-container h4, .table-container h4 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.graph-container img {
+    border-radius: var(--border-radius-small);
+    transition: var(--transition);
+}
+
+.graph-container img:hover {
+    transform: scale(1.02);
+}
+
+/* ===== PREDICTOR ===== */
+.predictor-container {
+    background: var(--secondary-gradient);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.predictor-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.predictor-container h4 {
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.predictor-container .form-control {
+    border: none;
+    border-radius: var(--border-radius-small);
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.predictor-container .btn {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-small);
+    border: 2px solid white;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.predictor-container .btn:hover {
+    background-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== ALERTAS PERSONALIZADAS ===== */
+.alert {
+    border: none;
+    border-radius: var(--border-radius-small);
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    box-shadow: var(--card-shadow);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+}
+
+/* ===== INDICADORES DE ESTADO ===== */
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.status-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.status-error {
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+    50% { box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); }
+    100% { box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+}
+
+/* ===== TABLA ===== */
+.table {
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.table thead th {
+    background: var(--primary-gradient);
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    padding: 1rem;
+}
+
+.table tbody tr {
+    transition: var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+}
+
+.table tbody td {
+    padding: 1rem;
+    border-color: #f8f9fa;
+    vertical-align: middle;
+}
+
+/* ===== BADGES ===== */
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-small);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge.bg-primary {
+    background: var(--primary-gradient) !important;
+}
+
+/* ===== CARDS DE CLASIFICACIÓN ===== */
+.classification-card {
+    background: white;
+    border-radius: var(--border-radius-small);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.classification-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.classification-card h5 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.classification-card h2 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.classification-card .text-muted {
+    font-weight: 500;
+}
+
+/* ===== BOTONES ===== */
+.btn {
+    font-weight: 500;
+    border-radius: var(--border-radius-small);
+    padding: 0.75rem 1.5rem;
+    transition: var(--transition);
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+}
+
+.btn-danger {
+    background: var(--danger-gradient);
+}
+
+/* ===== LOADING STATES ===== */
+.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .graph-container, .table-container {
+        padding: 1rem;
+    }
+    
+    .predictor-container {
+        padding: 1.5rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .graph-container h4, .table-container h4 {
+        font-size: 1.25rem;
+    }
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===== UTILIDADES ===== */
+.text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.gradient-text {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}

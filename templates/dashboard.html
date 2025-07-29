@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Análisis de Viviendas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card h5 {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card h3 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        .graph-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+        .predictor-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body style="background-color: #f8f9fa;">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-home me-2"></i>
+                Dashboard Viviendas
+            </a>
+            <button class="btn btn-outline-light" onclick="actualizarDatos()">
+                <i class="fas fa-sync-alt me-1"></i>
+                Actualizar
+            </button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        
+        <!-- Estado de conexión -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <strong>Estado del Sistema:</strong>
+                    {% if datos.tasa_cambio.success %}
+                        <span class="status-indicator status-success"></span>API de cambio: Conectado
+                    {% else %}
+                        <span class="status-indicator status-error"></span>API de cambio: {{ datos.tasa_cambio.message }}
+                    {% endif %}
+                    
+                    {% if datos.carga_datos.success %}
+                        <span class="status-indicator status-success ms-3"></span>Datos: Cargados correctamente
+                    {% else %}
+                        <span class="status-indicator status-error ms-3"></span>Datos: {{ datos.carga_datos.message }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if datos.carga_datos.success %}
+        
+        <!-- Estadísticas principales -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5><i class="fas fa-building me-1"></i>Total Viviendas</h5>
+                    <h3>{{ datos.estadisticas.total_viviendas | default(0) }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5><i class="fas fa-calculator me-1"></i>Promedio/m² COP</h5>
+                    <h3>${{ "{:,.0f}".format(datos.estadisticas.promedio_precio_m2_COP) if datos.estadisticas.promedio_precio_m2_COP else 0 }}</h3>
+                </div>
+            </div>
+
+        <!-- Clasificación por tipo de vivienda -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="graph-container">
+                    <h4 class="mb-3"><i class="fas fa-pie-chart me-2"></i>Clasificación por Tipo de Vivienda</h4>
+                    <div class="row">
+                        {% for tipo, cantidad in datos.estadisticas.clasificacion_viviendas.items() %}
+                        <div class="col-md-4 mb-3">
+                            <div class="classification-card text-center">
+                                <h5 class="card-title">{{ tipo }}</h5>
+                                <h2 class="text-primary">{{ cantidad }}</h2>
+                                <p class="text-muted">{{ "{:.1f}%".format((cantidad / datos.estadisticas.total_viviendas) * 100) }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="graph-container">
+                    <h4 class="mb-3"><i class="fas fa-scatter-chart me-2"></i>Precio vs Área por Tipo</h4>
+                    {% if datos.graficos.dispersion %}
+                        <img src="data:image/png;base64,{{ datos.graficos.dispersion }}" 
+                             class="img-fluid rounded" alt="Gráfico de Dispersión">
+                    {% else %}
+                        <div class="alert alert-warning">No se pudo generar el gráfico de dispersión</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="graph-container">
+                    <h4 class="mb-3"><i class="fas fa-chart-line me-2"></i>Regresión Lineal</h4>
+                    {% if datos.graficos.regresion %}
+                        <img src="data:image/png;base64,{{ datos.graficos.regresion }}" 
+                             class="img-fluid rounded" alt="Gráfico de Regresión">
+                    {% else %}
+                        <div class="alert alert-warning">No se pudo generar el gráfico de regresión</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del modelo de regresión -->
+        {% if datos.regresion %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="graph-container">
+                    <h4 class="mb-3"><i class="fas fa-robot me-2"></i>Modelo de Regresión Lineal</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Intercepto (Precio Base):</strong><br>
+                            <span class="h5 text-primary">${{ "{:,.0f}".format(datos.regresion.intercepto) }} COP</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Pendiente (por m²):</strong><br>
+                            <span class="h5 text-primary">${{ "{:,.0f}".format(datos.regresion.pendiente) }} COP</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Precisión del Modelo:</strong><br>
+                            <span class="h5 text-primary">{{ "{:.1f}%".format(datos.regresion.score * 100) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tabla de datos -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="table-container">
+                    <h4 class="mb-3"><i class="fas fa-table me-2"></i>Muestra de Datos</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="datosTabla">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Área (m²)</th>
+                                    <th>Precio COP</th>
+                                    <th>Precio USD</th>
+                                    <th>Tipo</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Se cargará con JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary" onclick="cargarMasDatos()">
+                        <i class="fas fa-plus me-1"></i>Cargar más datos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Error en carga de datos -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <h4><i class="fas fa-exclamation-triangle me-2"></i>Error al cargar datos</h4>
+                    <p>{{ datos.carga_datos.message }}</p>
+                    <button class="btn btn-danger" onclick="actualizarDatos()">
+                        <i class="fas fa-sync-alt me-1"></i>Reintentar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let datosCargados = 10; // Contador para paginación
+        
+        // Cargar datos iniciales de la tabla
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarDatosTabla();
+        });
+        
+        function cargarDatosTabla(limite = 10) {
+            fetch(`/api/tabla?limite=${limite}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.datos) {
+                        const tbody = document.querySelector('#datosTabla tbody');
+                        tbody.innerHTML = '';
+                        
+                        data.datos.forEach(row => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${row.area || 'N/A'}</td>
+                                <td>${row.precio ? row.precio.toLocaleString() : 'N/A'}</td>
+                                <td>${row.precio_USD ? row.precio_USD.toFixed(2) : 'N/A'}</td>
+                                <td><span class="badge bg-primary">${row.tipo_vivienda || 'N/A'}</span></td>
+                                <td>${row.descripcion ? row.descripcion.substring(0, 50) + '...' : 'N/A'}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cargando datos:', error);
+                    const tbody = document.querySelector('#datosTabla tbody');
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error cargando datos</td></tr>';
+                });
+        }
+        
+        function cargarMasDatos() {
+            datosCargados += 10;
+            cargarDatosTabla(datosCargados);
+        }
+        
+        function actualizarDatos() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Actualizando...';
+            btn.disabled = true;
+            
+            fetch('/api/actualizar')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Recargar la página para mostrar datos actualizados
+                        location.reload();
+                    } else {
+                        alert('Error al actualizar: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error de conexión al actualizar');
+                })
+                .finally(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+        }
+        
+    </script>
+
+</body>
+</html>
