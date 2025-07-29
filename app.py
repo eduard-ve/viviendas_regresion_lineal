@@ -1,8 +1,10 @@
-from controllers.vivienda_controller import ViviendaController
-from flask import Flask, render_template, request, jsonify, url_for
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import sys
 import os
+from controllers.vivienda_controller import ViviendaController
+from flask import Flask, render_template, request, jsonify, url_for
+
+# Agregar el directorio actual al path para importar módulos
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 app = Flask(__name__)
 
